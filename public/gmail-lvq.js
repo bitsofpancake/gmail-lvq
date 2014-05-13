@@ -17,38 +17,38 @@ ws.onerror = function (error) {
 
 ws.onmessage = function (e) {
 	console.log(e.data);
-	var messages = JSON.parse(e.data);
-	messages.forEach(function (message) {
-		message.el = $('div', function (m) {
+	var emails = JSON.parse(e.data);
+	emails.forEach(function (email) {
+		email.el = $('div', function (m) {
 			m.className = 'message';
-			m.appendChild($('h2', function (h2) { h2.appendChild(document.createTextNode(message.message[0].subject)); }));
-			m.appendChild($('i', function (el) { el.appendChild(document.createTextNode(message.message[0].from)); }));
+			m.appendChild($('h2', function (h2) { h2.appendChild(document.createTextNode(email.subject)); }));
+			m.appendChild($('i', function (el) { el.appendChild(document.createTextNode(email.from)); }));
 			m.appendChild($('br'));
 			m.appendChild($('br'));
-			m.appendChild($('div', function (body) { body.innerHTML = message.message[0].body_html; }));
+			m.appendChild($('div', function (body) { body.innerHTML = email.bodyHtml; }));
 		});
 		
 		if (!queue.length)
-			message.el.classList.add('focus');
-		document.getElementById('messages').insertBefore(message.el, document.getElementById('messages').firstChild);
-		queue.push(message);
+			email.el.classList.add('focus');
+		document.getElementById('messages').insertBefore(email.el, document.getElementById('messages').firstChild);
+		queue.push(email);
 	});
 };
 
 function pop(value) {
-	var message = queue.shift();
-	message.value = value;
+	var email = queue.shift();
+	email.value = value;
 	ws.send(JSON.stringify({
-		'index': message.index,
+		'index': email.index,
 		'value': value
 	}));
 	
-	message.el.classList.add(value ? 'remove-important' : 'remove-not-important');
-	message.el.classList.remove('focus');
+	email.el.classList.add(value ? 'remove-important' : 'remove-not-important');
+	email.el.classList.remove('focus');
 	if (queue[0])
 		queue[0].el.classList.add('focus');
 	setTimeout(function () {
-		message.el.parentNode.removeChild(message.el);
+		email.el.parentNode.removeChild(email.el);
 	}, 400);
 }
 
@@ -58,6 +58,8 @@ window.onkeydown = function (e) {
 	// Left, not important.
 	if (e.which === 37)
 		pop(false);
+		
+	// Right, important.
 	else if (e.which === 39)
 		pop(true);
 };

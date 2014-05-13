@@ -2,22 +2,25 @@ function run() {
 	var RESULTS_PER_PAGE = 2;
 	
 	var threads = GmailApp.search('*');
-	var msg = sendData([[]]);
+	var index = sendData([]);
+	var data;
 	while (true) {
 		try {
-			var data = GmailApp.getMessagesForThreads(threads.slice(msg, msg + RESULTS_PER_PAGE)).map(function (messages) {
-				return [{
-					'from': messages[0].getFrom(),
-					'body_plain': messages[0].getPlainBody(),
-					'body_html': messages[0].getBody(),
-					'subject': messages[0].getSubject()
-				}];
+			data = GmailApp.getMessagesForThreads(threads.slice(index, index + RESULTS_PER_PAGE)).map(function (messages, i) {
+				return {
+					gmailIndex: index + i,
+					from: messages[0].getFrom(),
+					bodyPlain: messages[0].getPlainBody(),
+					bodyHtml: messages[0].getBody(),
+					subject: messages[0].getSubject()
+				};
 			}); 
 		} catch (e) {
+			index += RESULTS_PER_PAGE;
 			continue;
 		}
 		
-		msg = sendData(data);
+		index = sendData(data);
 	}
 }
 
