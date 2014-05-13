@@ -21,7 +21,6 @@ http.createServer(function (req, res) {
 		try {
 			console.log('forwarding');
 			connections[id].clientSocket.send(JSON.stringify(JSON.parse(body).map(function (message) {
-				connections[id].messagesForwarded++;
 				var record = {
 					'index': null,
 					'message': message
@@ -30,10 +29,8 @@ http.createServer(function (req, res) {
 				return record;
 			})));
 			
-			connections[id].serverSocket = res;
-			connections[id].serverInterval = setInterval(function () {
-				res.write('.');
-			}, 1000);
+			res.writeHead(200);
+			res.end();
 		} catch (e) {
 			throw e
 			res.writeHead(400);
@@ -50,11 +47,8 @@ wss.on('connection', function (socket) {
 	//if (!connections[id])
 	connections[id] = {
 		clientSocket: socket,
-		serverSocket: null,
-		serverInterval: null,
 		id: id,
-		messages: [],
-		messagesForwarded: 0
+		messages: []
 	};
 	
 	console.log('client connected: ' + id);
@@ -75,13 +69,3 @@ wss.on('connection', function (socket) {
 		fs.writeFileSync('data.json', JSON.stringify(connections[id].messages));
 	});
 });
-
-// 
-setInterval(function () {
-	for (var id in connections)
-		// Request more data, if necessary, by ending the connection to server.
-		if (--connections[id].messagesForwarded < REFRESH_THRESHOLD && connections[id].serverSocket) {
-			clearInterval(connections[id].serverInterval);
-			connections[id].serverSocket.end();
-		}
-}, 500);
