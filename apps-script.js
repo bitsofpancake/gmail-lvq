@@ -2,10 +2,10 @@ function run() {
 	var RESULTS_PER_PAGE = 2;
 	
 	var threads = GmailApp.search('*');
-	var i = 0;
+	var msg = sendData([[]]);
 	while (true) {
 		try {
-			var data = GmailApp.getMessagesForThreads(threads.slice(i * RESULTS_PER_PAGE, ++i * RESULTS_PER_PAGE)).map(function (messages) {
+			var data = GmailApp.getMessagesForThreads(threads.slice(msg, msg + RESULTS_PER_PAGE)).map(function (messages) {
 				return [{
 					'from': messages[0].getFrom(),
 					'body_plain': messages[0].getPlainBody(),
@@ -17,12 +17,12 @@ function run() {
 			continue;
 		}
 		
-		sendData(data);
+		msg = sendData(data);
 	}
 }
 
 function sendData(data) {
-	UrlFetchApp.fetch('http://cs.hmc.edu:40222/testing', {
+	return +UrlFetchApp.fetch('http://cs.hmc.edu:40222/testing', {
 		'method': 'POST',
 		'contentType': 'application/json',
 		'payload': JSON.stringify(data)

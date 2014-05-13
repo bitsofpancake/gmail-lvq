@@ -2,8 +2,6 @@ var http = require('http');
 var ws = require('ws');
 var fs = require('fs');
 
-var REFRESH_THRESHOLD = 25;
-
 http.createServer(function (req, res) {
 	var id = req.url.substr(1);
 	console.log('server connected ' + id);
@@ -30,7 +28,7 @@ http.createServer(function (req, res) {
 			})));
 			
 			res.writeHead(200);
-			res.end();
+			res.end(connections[id].messages.length.toString());
 		} catch (e) {
 			throw e
 			res.writeHead(400);
