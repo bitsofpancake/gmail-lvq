@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+	<head>
+		<title>GmailLVQ</title>
+		<style type="text/css">
+			html {
+				font-family: sans-serif;
+				font-size: 10pt;
+				background-color: #efefef;
+				overflow-x: hidden;
+			}
+			
+			body {
+				margin: 0 auto;
+				width: 850px;
+			}
+			
+			
+			header {
+				font-size: 1.5em;
+			}
+			h2 {
+				margin: 0 0 10px;
+			}
+			
+			header span {
+				float: right;
+			}
+			button {
+				font-size: inherit;
+				padding: 10px;
+				border: 0;
+			}
+			
+			#messages {
+				margin-top: 3em;
+				overflow: hidden;
+			}
+			
+			.message {
+				position: absolute;
+				background-color: #fff;
+				border: 1px solid #ccc;
+				padding: 2em;
+				line-height: 1.5em;
+				opacity: 0.1;
+				overflow: hidden;
+				width: 800px;
+				transition: opacity 200ms ease-in-out;
+				-webkit-user-select: none;
+				cursor: default;
+			}
+			
+			.message.focus {
+				opacity: 1;
+				-webkit-transform: none;
+				box-shadow: 0px 0px 20px #ff9;
+				border: 1px solid gold;
+				-webkit-user-select: inherit;
+				cursor: auto;
+			}
+			
+			.message.remove-important {
+				-webkit-animation: remove-important 400ms ease-in-out;
+			}
+						
+			@-webkit-keyframes remove-important {
+				0% {
+					opacity: 1;
+					-webkit-transform: none;
+				}
+				100% {
+					opacity: 0; 
+					-webkit-transform: translate(1000px, 0) rotate(8deg);
+				}
+			}
+			
+			.message.remove-not-important {
+				-webkit-animation: not-remove-important 400ms ease-in-out;
+			}
+						
+			@-webkit-keyframes not-remove-important {
+				0% {
+					opacity: 1;
+					-webkit-transform: none;
+				}
+				100% {
+					opacity: 0; 
+					-webkit-transform: translate(-1000px, 0) rotate(-8deg);
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<span>
+				<button id="important">Important</button>
+				<button id="not-important">Not important</button>
+				<button style="background-color: #4585F2; color: white">Done</button>
+			</span>
+			
+			<h1>GmailLVQ</h1>
+			
+		</header>
+		
+		
+		<div id="messages"></div>
+		<script type="text/javascript" src="gmail-lvq.js"></script>
+	</body>
+</html>
